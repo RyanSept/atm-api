@@ -148,6 +148,9 @@ Content-Type: application/json
 ```
 
 ## Deploying and Management
+Create an app on heroku `$ heroku apps:create <app_name>` and set secret config variables through the heroku dashboard.
+
+
 
 ## Unit Tests
 In progress.
