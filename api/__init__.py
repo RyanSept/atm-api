@@ -37,3 +37,6 @@ def register_api_resources(rest_api):
 
     from api.views.register import Register
     rest_api.add_resource(Register, "/accounts/create")
+
+    from api.views.login import Login
+    rest_api.add_resource(Login, "/accounts/login")

@@ -5,6 +5,9 @@ class Config:
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    JWT_TOKEN_EXPIRY = int(os.environ.get("JWT_TOKEN_EXPIRY"))
+    BUNDLE_ERRORS = True
 
 
 class DevelopmentConfig(Config):
@@ -34,5 +37,6 @@ def load_config():
     except KeyError:
         print("Unable to load configs. An invalid STAGE was set."
               " Choose one from 'dev, staging, prod'")
-    except Exception:
-        print("Something went wrong while loading the configs")
+    except Exception as error:
+        print("Something went wrong while loading the configs.")
+        print(error)

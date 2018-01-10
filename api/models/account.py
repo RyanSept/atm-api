@@ -8,7 +8,7 @@ from sqlalchemy.sql import func
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     account_number = db.Column(db.String(255), unique=True)
-    pin = db.Column(db.String(4), nullable=False)
+    pin = db.Column(db.Integer, nullable=False)
     first_name = db.Column(db.String(255))
     last_name = db.Column(db.String(255))
     balance = db.Column(db.BigInteger, nullable=False)

@@ -1,10 +1,9 @@
 """
 This module contains the view for creating a new account
 """
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from api import db
 from api.models.account import Account
-from flask_restful import reqparse
 import sqlalchemy
 
 
@@ -45,9 +44,10 @@ class Register(Resource):
             return {"message": "Something went wrong"}, 500
 
     def _validate_pin(self, pin):
+        pin = str(pin)
         if pin.isdigit() and len(pin) == 4:
             return pin
-        raise ValueError("Invalid account number: {}. Expected digits".format(
+        raise ValueError("Invalid pin number: {}. Expected 4 digit pin".format(
             pin))
 
     def _validate_str(self, string):
