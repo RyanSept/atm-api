@@ -1,5 +1,5 @@
 # ATM-API
-This is a Bank ATM api.
+This is a Bank ATM api. It is available at https://atm2.herokuapp.com/
 
 ## Built with
 Flask-restful, SQLAlchemy
@@ -104,7 +104,7 @@ HTTP/1.1 201 OK
 Vary: Accept
 Content-Type: application/json
 {
-    "message": "Profile was created."
+    "message": "Account was created."
 }
 
 ```
@@ -150,6 +150,7 @@ Content-Type: application/json
 ## Deploying and Management
 Create an app on heroku `$ heroku apps:create <app_name>` and set secret config variables through the heroku dashboard.
 
+`$ git push heroku <current_branch>:master` to push the app to heroku. (Remember to initialize the db!)
 
 
 ## Unit Tests

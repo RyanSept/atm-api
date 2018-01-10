@@ -37,7 +37,7 @@ class Register(Resource):
             )
             db.session.add(account)
             db.session.commit()
-            return {"message": "Profile was created."}, 201
+            return {"message": "Account was created."}, 201
         except sqlalchemy.exc.IntegrityError as error:
             if "duplicate key value" in str(error):
                 return {"message": "Unable to create account."}, 400
