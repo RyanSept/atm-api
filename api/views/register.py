@@ -13,10 +13,17 @@ class Register(Resource):
         # parse request json
         parser = reqparse.RequestParser()
         parser.add_argument("account_number", location="json", required=True)
-        parser.add_argument("pin", location="json", required=True)
-        parser.add_argument("first_name", location="json", required=True)
-        parser.add_argument("last_name", location="json", required=True)
-        parser.add_argument("opening_balance", location="json", required=True)
+        parser.add_argument("pin", location="json",
+                            type=self._validate_pin,
+                            required=True)
+        parser.add_argument("first_name", location="json",
+                            type=self._validate_str,
+                            required=True)
+        parser.add_argument("last_name", location="json",
+                            type=self._validate_str,
+                            required=True)
+        parser.add_argument("opening_balance", location="json", type=int,
+                            required=True)
         request_json = parser.parse_args()
 
         try:
@@ -36,3 +43,14 @@ class Register(Resource):
                 return {"message": "Unable to create account."}, 400
         except Exception:
             return {"message": "Something went wrong"}, 500
+
+    def _validate_pin(self, pin):
+        if pin.isdigit() and len(pin) == 4:
+            return pin
+        raise ValueError("Invalid account number: {}. Expected digits".format(
+            pin))
+
+    def _validate_str(self, string):
+        if len(string):
+            return string
+        raise ValueError("Value cannot be empty.")
