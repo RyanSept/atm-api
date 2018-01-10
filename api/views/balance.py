@@ -12,4 +12,13 @@ from api.utils import auth
 class Balance(Resource):
     @auth
     def get(self):
-        return "Balance"
+        account_id = request.authorization["account_id"]
+        # get account
+        account = db.session.query(Account.account_number,
+                                   Account.balance).filter_by(
+            id=account_id).first()
+        if account is None:
+            return {"message": "Account not found."}, 400
+
+        return {"balance": account.balance,
+                "account_number": account.account_number}
