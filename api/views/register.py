@@ -2,6 +2,7 @@
 This module contains the view for creating a new account
 """
 from flask_restful import Resource, reqparse
+from passlib.hash import pbkdf2_sha256
 from api import db
 from api.models.account import Account
 import sqlalchemy
@@ -29,7 +30,7 @@ class Register(Resource):
             # create account
             account = Account(
                 request_json["account_number"],
-                request_json["pin"],
+                pbkdf2_sha256.hash(request_json["pin"]),
                 request_json["first_name"],
                 request_json["last_name"],
                 request_json["opening_balance"]
@@ -40,7 +41,8 @@ class Register(Resource):
         except sqlalchemy.exc.IntegrityError as error:
             if "duplicate key value" in str(error):
                 return {"message": "Unable to create account."}, 400
-        except Exception:
+        except Exception as error:
+            print(error)
             return {"message": "Something went wrong"}, 500
 
     def _validate_pin(self, pin):
