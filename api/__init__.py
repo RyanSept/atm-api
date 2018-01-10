@@ -8,15 +8,17 @@ db = SQLAlchemy()
 rest_api = Api()
 
 
-def create_app():
+def create_app(config):
     """
     Create app with the specified config
 
+    :param config: config file object
     :return: Flask app object
     """
     app = Flask(__name__)
-    app.config["DEBUG"] = True
-    # db.init_app(app)
+    app.config.from_object(config)
+    # app.config["DEBUG"] = True
+    db.init_app(app)
     register_api_resources(rest_api)
     rest_api.init_app(app)
 
