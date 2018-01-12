@@ -2,6 +2,7 @@
 This module contains the model for the accounts table
 """
 from api import db
+from api.models.transaction import Transaction
 from sqlalchemy.sql import func
 
 

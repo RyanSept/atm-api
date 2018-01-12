@@ -30,7 +30,7 @@ class Login(Resource):
             pin_is_valid = pbkdf2_sha256.verify(request_json["pin"],
                                                 account.pin)
             if not pin_is_valid:
-                return {"message": "Pin is invalid."}
+                return {"message": "Pin is invalid."}, 401
 
             token = jwt.encode(
                 {

@@ -40,7 +40,7 @@ class Register(Resource):
             return {"message": "Account was created."}, 201
         except sqlalchemy.exc.IntegrityError as error:
             if "duplicate key value" in str(error):
-                return {"message": "Unable to create account."}, 400
+                return {"message": "Account already exists."}, 400
         except Exception as error:
             print(error)
             return {"message": "Something went wrong"}, 500
