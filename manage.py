@@ -2,7 +2,7 @@ from flask_script import Manager
 from api import create_app, db
 from api.models.account import Account
 from api.models.transaction import Transaction
-from config import load_config
+from api.config import load_config
 
 app = create_app(load_config())
 manager = Manager(app)
