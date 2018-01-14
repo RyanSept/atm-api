@@ -17,8 +17,6 @@ class Balance(Resource):
         account = db.session.query(Account.account_number,
                                    Account.balance).filter_by(
             id=account_id).first()
-        if account is None:
-            return {"message": "Account not found."}, 400
-
+        print("Retrieved balance for account %s" % account.account_number)
         return {"balance": account.balance,
                 "account_number": account.account_number}

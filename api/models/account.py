@@ -39,3 +39,12 @@ class Account(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.balance = opening_balance
+
+    def get_todays_deposits(self):
+        return db.session.query(
+            Transaction.account_id,
+            Transaction.amount,
+            Transaction.date_created).filter(
+            Transaction.account_id == self.id,
+            Transaction.amount > 0,
+            Transaction.date_created >= db.func.current_date()).all()
