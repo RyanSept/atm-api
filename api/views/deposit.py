@@ -3,7 +3,7 @@ This module contains the resource for depositing funds into an account
 """
 
 from flask_restful import Resource, reqparse
-from flask import request
+from flask import request, current_app
 from api import db
 from api.models.account import Account
 from api.models.transaction import Transaction
@@ -25,7 +25,8 @@ class Deposit(Resource):
                             self._validate_deposit_amount(val, account))
         request_json = parser.parse_args()
 
-        print("Retrieving today's deposits for account: %s" % account.id)
+        current_app.logger.info("Retrieving today's deposits for account: %s",
+                                account.id)
         todays_deposits = account.get_todays_deposits()
         if todays_deposits:
             # check if number deposits exceeded
@@ -42,7 +43,8 @@ class Deposit(Resource):
                 account.max_deposit_per_day,
                 "deposit")
 
-        print("Depositing %s to account." % request_json.deposit_amount)
+        current_app.logger.info("Depositing %s to account.",
+                                request_json.deposit_amount)
         # increase account balance and record transaction
         account.balance += request_json.deposit_amount
         transaction = Transaction(request_json.deposit_amount, account.id)
@@ -57,10 +59,14 @@ class Deposit(Resource):
 
     def _validate_deposit_amount(self, deposit_amount, account):
         if not type(deposit_amount) is int:
+            current_app.logger.debug("Should be an integer.")
             raise ValueError("Should be an integer.")
         if deposit_amount <= account.max_deposit_per_transaction\
                 and deposit_amount > 0:
             return deposit_amount
+        current_app.logger.debug("The maximum deposit per transaction is {}."
+                                 " The minimum is 1.".format(
+                                     account.max_deposit_per_transaction))
         raise ValueError("The maximum deposit per transaction is {}."
                          " The minimum is 1.".format(
                              account.max_deposit_per_transaction))

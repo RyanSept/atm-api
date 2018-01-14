@@ -3,7 +3,7 @@ This module contains the resource for withdrawing funds from an account
 """
 
 from flask_restful import Resource, reqparse
-from flask import request
+from flask import request, current_app
 from api import db
 from api.models.account import Account
 from api.models.transaction import Transaction
@@ -26,7 +26,8 @@ class Withdraw(Resource):
                             self._validate_withdrawal_amount(val, account))
         request_json = parser.parse_args()
 
-        print("Retrieving today's withdrawals for account: %s" % account.id)
+        current_app.logger.info(
+            "Retrieving today's withdrawals for account: %s", account.id)
         todays_withdrawals = account.get_todays_withdrawals()
         if todays_withdrawals:
             # check if number of withdrawals exceeded
@@ -44,7 +45,8 @@ class Withdraw(Resource):
                 account.max_withdraw_per_day,
                 "withdrawal")
 
-        print("Withdrawing %s from account." % request_json.withdrawal_amount)
+        current_app.logger.info("Withdrawing %s from account." %
+                                request_json.withdrawal_amount)
         # increase account balance and record transaction
         account.balance -= request_json.withdrawal_amount
         transaction = Transaction(-request_json.withdrawal_amount, account.id)

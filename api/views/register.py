@@ -1,6 +1,7 @@
 """
 This module contains the view for creating a new account
 """
+from flask import current_app
 from flask_restful import Resource, reqparse
 from passlib.hash import pbkdf2_sha256
 from api import db
@@ -40,9 +41,10 @@ class Register(Resource):
             return {"message": "Account was created."}, 201
         except sqlalchemy.exc.IntegrityError as error:
             if "duplicate key value" in str(error):
+                current_app.logger.info("Account already exists.")
                 return {"message": "Account already exists."}, 400
         except Exception as error:
-            print(error)
+            current_app.logger.error(error)
             return {"message": "Something went wrong"}, 500
 
     def _validate_pin(self, pin):

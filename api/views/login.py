@@ -24,12 +24,15 @@ class Login(Resource):
             account_number=request_json.account_number).first()
 
         if account is None:
+            current_app.logger.info(
+                "Invalid account number: %s", request_json.account_number)
             return {"message": "Invalid account number."}, 401
 
         try:
             pin_is_valid = pbkdf2_sha256.verify(request_json["pin"],
                                                 account.pin)
             if not pin_is_valid:
+                current_app.logger.debug("Pin is invalid.")
                 return {"message": "Pin is invalid."}, 401
 
             token = jwt.encode(
@@ -44,6 +47,6 @@ class Login(Resource):
             return {"token": token.decode("utf-8")}
         except ValueError as error:
             if "not a valid pbkdf2_sha256 hash" in str(error):
-                print("Invalid hash stored as pin.")
-            print(error)
+                current_app.logger.error("Invalid hash stored as pin.")
+            current_app.logger.error(error)
             return {"message": "Something went wrong."}, 500

@@ -1,4 +1,7 @@
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Config:
@@ -8,6 +11,7 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY")
     JWT_TOKEN_EXPIRY = int(os.environ.get("JWT_TOKEN_EXPIRY"))
     BUNDLE_ERRORS = True
+    LOG_LEVEL = logging.DEBUG
 
 
 class DevelopmentConfig(Config):
@@ -20,6 +24,7 @@ class StagingConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
+    LOG_LEVEL = logging.INFO
 
 
 def load_config():
@@ -35,8 +40,8 @@ def load_config():
     try:
         return config_to_stage_map[stage]
     except KeyError:
-        print("Unable to load configs. An invalid STAGE was set."
-              " Choose one from 'dev, staging, prod'")
+        logger.debug("Unable to load configs. An invalid STAGE was set."
+                     " Choose one from 'dev, staging, prod'")
     except Exception as error:
-        print("Something went wrong while loading the configs.")
-        print(error)
+        logger.debug("Something went wrong while loading the configs.")
+        logger.error(error)

@@ -3,8 +3,10 @@ from api.config import load_config
 from api.models.account import Account
 import unittest
 import json
+import logging
 
 app = create_app(load_config())
+logging.disable(logging.CRITICAL)
 
 
 class BaseTestCase(unittest.TestCase):

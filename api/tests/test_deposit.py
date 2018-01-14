@@ -106,7 +106,6 @@ class AccountDepositTestSuite(BaseTestCase):
                                     headers=self.headers)
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.get_data())
-        print(data)
         self.assertEqual(data, {
                          "message": {
                              "deposit_amount": "Unable to make deposit as it"

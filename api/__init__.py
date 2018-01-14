@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
+from logging.handlers import RotatingFileHandler
+import logging
 
 
 db = SQLAlchemy()
@@ -21,6 +23,7 @@ def create_app(config):
     db.init_app(app)
     register_api_resources(rest_api)
     rest_api.init_app(app)
+    setup_logging(app)
 
     return app
 
@@ -46,3 +49,16 @@ def register_api_resources(rest_api):
 
     from api.views.withdraw import Withdraw
     rest_api.add_resource(Withdraw, "/accounts/withdraw")
+
+
+def setup_logging(app):
+    """
+    Set up app logger
+    """
+    formatter = logging.Formatter(
+        "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
+    handler = RotatingFileHandler(
+        'atm_api.log', maxBytes=10000000, backupCount=5)
+    handler.setLevel(app.config["LOG_LEVEL"])
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)

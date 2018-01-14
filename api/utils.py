@@ -32,11 +32,11 @@ def auth(view_function):
             request.authorization = payload
             return view_function(*args, **kwargs)
         except jwt.ExpiredSignatureError:
-            print("Expired token.")
+            current_app.logger.info("Expired token: %s", token)
             abort(401, message={"Authorization":
                                 "Token Expired. Please log in again."})
         except jwt.InvalidTokenError:
-            print("Invalid token.")
+            current_app.logger.info("Invalid token.")
             abort(401, message={"Authorization":
                                 "Invalid Token. Please log in again."})
     return wrapped_view
@@ -60,8 +60,11 @@ def validate_transaction_frequency(transaction_list,
 
     :return: boolean
     """
+    current_app.logger.debug("Got %s %ss for today.", len(
+        transaction_list), transaction_type)
     if len(transaction_list) >= transaction_frequency_limit:
-        print(f"{transaction_type.title()} frequency limit exceeded.")
+        current_app.logger.info(
+            f"{transaction_type.title()} frequency limit exceeded.")
         abort(400, message={
               f"{transaction_type}_amount": f"The allowed maximum number of"
               f" {transaction_type}s per day for your"
@@ -93,7 +96,8 @@ def validate_transaction_limit(sum_todays_transactions,
     """
     if sum_todays_transactions + pending_transaction_amount >\
             transaction_amount_limit:
-        print(f"{transaction_type} amount limit for day exceeded.")
+        current_app.logger.info(
+            f"{transaction_type.title()} amount limit for day exceeded.")
         abort(400, message={
               f"{transaction_type}_amount": f"Unable to make"
               f" {transaction_type} as it would exceed your"
