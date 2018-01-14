@@ -7,7 +7,8 @@ from flask import request
 from api import db
 from api.models.account import Account
 from api.models.transaction import Transaction
-from api.utils import auth
+from api.utils import auth, validate_transaction_frequency,\
+    validate_transaction_limit
 
 
 class Deposit(Resource):
@@ -27,26 +28,19 @@ class Deposit(Resource):
         print("Retrieving today's deposits for account: %s" % account.id)
         todays_deposits = account.get_todays_deposits()
         if todays_deposits:
-            # number deposits exceeded
-            if len(todays_deposits) >= account.max_deposit_frequency:
-                print("Deposit frequency limit exceeded.")
-                return {"message":
-                        {"deposit_amount": "The allowed maximum number of"
-                         " deposits per day for your account is {}".format(
-                             account.max_deposit_frequency)}}, 400
+            # check if number deposits exceeded
+            validate_transaction_frequency(
+                todays_deposits,
+                account.max_deposit_frequency,
+                "deposit")
             sum_todays_deposits = sum(
                 deposit.amount for deposit in todays_deposits)
-            # this deposit would exceed the daily limit
-            if sum_todays_deposits + request_json.deposit_amount >\
-                    account.max_deposit_per_day:
-                print("Deposit amount limit for day exceeded.")
-                return {"message":
-                        {"deposit_amount": "Unable to make deposit as "
-                         "it would exceed your"
-                         " daily deposit limit of {}."
-                         " You have deposited {} today".format(
-                             account.max_deposit_per_day,
-                             sum_todays_deposits)}}, 400
+            # check if this deposit would exceed the daily limit
+            validate_transaction_limit(
+                sum_todays_deposits,
+                request_json.deposit_amount,
+                account.max_deposit_per_day,
+                "deposit")
 
         print("Depositing %s to account." % request_json.deposit_amount)
         # increase account balance and record transaction

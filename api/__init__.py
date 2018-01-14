@@ -35,11 +35,14 @@ def register_api_resources(rest_api):
     from api.views.balance import Balance
     rest_api.add_resource(Balance, "/accounts/balance")
 
+    from api.views.register import Register
+    rest_api.add_resource(Register, "/accounts/create")
+
     from api.views.deposit import Deposit
     rest_api.add_resource(Deposit, "/accounts/deposit")
 
     from api.views.login import Login
     rest_api.add_resource(Login, "/accounts/login")
 
-    from api.views.register import Register
-    rest_api.add_resource(Register, "/accounts/create")
+    from api.views.withdraw import Withdraw
+    rest_api.add_resource(Withdraw, "/accounts/withdraw")

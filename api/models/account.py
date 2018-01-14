@@ -42,10 +42,27 @@ class Account(db.Model):
         self.balance = opening_balance
 
     def get_todays_deposits(self):
+        """
+        Get todays deposits for current account
+        :return: list of transactions
+        """
         return db.session.query(
             Transaction.account_id,
             Transaction.amount,
             Transaction.date_created).filter(
             Transaction.account_id == self.id,
             Transaction.amount > 0,
+            Transaction.date_created >= db.func.current_date()).all()
+
+    def get_todays_withdrawals(self):
+        """
+        Get todays withdrawals for current account
+        :return: list of transactions
+        """
+        return db.session.query(
+            Transaction.account_id,
+            Transaction.amount,
+            Transaction.date_created).filter(
+            Transaction.account_id == self.id,
+            Transaction.amount < 0,
             Transaction.date_created >= db.func.current_date()).all()

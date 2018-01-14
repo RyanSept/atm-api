@@ -60,9 +60,9 @@ class AccountDepositTestSuite(BaseTestCase):
                              "deposit_amount": "The maximum deposit per"
                              " transaction is 40000. The minimum is 1."}})
 
-    def test_cannot_deposit_more_times_than_daily_limit(self):
+    def test_cannot_deposit_more_times_than_frequency_limit(self):
         """
-        Test cannot deposit more times than daily limit
+        Test cannot deposit more times than frequency limit
         """
         # exhaust deposits
         for i in range(self.account.max_deposit_frequency):
@@ -84,7 +84,7 @@ class AccountDepositTestSuite(BaseTestCase):
                              "deposit_amount": "The allowed maximum number of"
                              " deposits per day for your account is 4"}})
 
-    def test_cannot_deposit_more_than_daily_amount_limit(self):
+    def test_cannot_deposit_more_than_daily_total_limit(self):
         """
         Test cannot deposit more money than is allowed for a day
         """
@@ -106,7 +106,10 @@ class AccountDepositTestSuite(BaseTestCase):
                                     headers=self.headers)
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.get_data())
-        self.assertEqual(data, {"message": {
-                                "deposit_amount": "Unable to make deposit as"
-                                " it would exceed your daily deposit limit "
-                                "of 150000. You have deposited 120000 today"}})
+        print(data)
+        self.assertEqual(data, {
+                         "message": {
+                             "deposit_amount": "Unable to make deposit as it"
+                             " would exceed your daily deposit limit of"
+                             " 150000. You have made deposits amounting to"
+                             " 120000 today"}})

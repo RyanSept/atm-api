@@ -40,3 +40,64 @@ def auth(view_function):
             abort(401, message={"Authorization":
                                 "Invalid Token. Please log in again."})
     return wrapped_view
+
+
+def validate_transaction_frequency(transaction_list,
+                                   transaction_frequency_limit,
+                                   transaction_type):
+    """
+    Check if transaction frequency has been exceeded. Abort if so, return
+    false if not
+
+    :param transaction_list: a list of the current day's transactions
+    :type transaction_list: list
+
+    :param transaction_frequency_limit: max transactions per day
+    :type transaction_frequency_limit: int
+
+    :param transaction_type: type of transaction eg. "withdraw" or "deposit"
+    :type transaction_type: str
+
+    :return: boolean
+    """
+    if len(transaction_list) >= transaction_frequency_limit:
+        print(f"{transaction_type.title()} frequency limit exceeded.")
+        abort(400, message={
+              f"{transaction_type}_amount": f"The allowed maximum number of"
+              f" {transaction_type}s per day for your"
+              f" account is {transaction_frequency_limit}"})
+    return False
+
+
+def validate_transaction_limit(sum_todays_transactions,
+                               pending_transaction_amount,
+                               transaction_amount_limit,
+                               transaction_type):
+    """
+    Check if max transaction amount for day will be reached if
+    current pending transaction is fulfilled
+
+    :param sum_todays_transactions: sum of the current day's transactions
+    :type sum_todays_transactions: int
+
+    :param pending_transaction_amount: amount to be added
+    :type pending_transaction_amount: int
+
+    :param transaction_amount_limit: max transaction amount
+    :type transaction_amount_limit: int
+
+    :param transaction_type: type of transaction eg. "withdraw" or "deposit"
+    :type transaction_type: str
+
+    :return: boolean
+    """
+    if sum_todays_transactions + pending_transaction_amount >\
+            transaction_amount_limit:
+        print(f"{transaction_type} amount limit for day exceeded.")
+        abort(400, message={
+              f"{transaction_type}_amount": f"Unable to make"
+              f" {transaction_type} as it would exceed your"
+              f" daily {transaction_type} limit of {transaction_amount_limit}."
+              f" You have made {transaction_type}s"
+              f" amounting to {sum_todays_transactions} today"})
+    return False
