@@ -27,6 +27,30 @@ class AccountWithdrawTestSuite(BaseTestCase):
         self.assertEqual(data, {"message": "Withdrew 10000 successfully.",
                                 "new_balance": 90000})
 
+    def test_cannot_withdraw_more_than_account_balance(self):
+        """
+        Test cannot withdraw more than account balance
+        """
+        # change account balance
+        with self.app.app_context():
+            db.session.query(Account).filter_by(
+                account_number=self.account.account_number).update(
+                {"balance": 1500})
+            db.session.commit()
+
+        # attempt withdraw 10000
+        response = self.client.post("/accounts/withdraw",
+                                    data=json.dumps(self.withdraw),
+                                    headers=self.headers)
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.get_data())
+
+        self.assertEqual(data, {"message":
+                                {"withdrawal_amount": "You do not have enough"
+                                 " balance in your account to withdraw 10000. "
+                                 "The bank requires a minumum balance of 1000"
+                                 " for the account to remain open."}})
+
     def test_cannot_withdraw_more_than_20000_at_once(self):
         """
         Test cannot withdraw more than transaction limit
@@ -64,15 +88,15 @@ class AccountWithdrawTestSuite(BaseTestCase):
         """
         Test cannot withdraw more times than frequency limit
         """
-        # exhaust deposits
+        # exhaust withdrawals
         for i in range(self.account.max_withdraw_frequency):
             response = self.client.post("/accounts/withdraw",
                                         data=json.dumps(self.withdraw),
                                         headers=self.headers)
             self.assertEqual(response.status_code, 200,
-                             msg="Unable to make deposit.")
+                             msg="Unable to make withdrawal.")
 
-        # make extra deposit
+        # make extra withdrawal
         response = self.client.post("/accounts/withdraw",
                                     data=json.dumps(self.withdraw),
                                     headers=self.headers)
@@ -106,7 +130,6 @@ class AccountWithdrawTestSuite(BaseTestCase):
                                     headers=self.headers)
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.get_data())
-        print(data)
         self.assertEqual(data, {
                          "message": {
                              "withdrawal_amount": "Unable to make withdrawal"
