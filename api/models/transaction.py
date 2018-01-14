@@ -8,7 +8,8 @@ from sqlalchemy.sql import func
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.BigInteger, nullable=False)
-    account_id = db.Column(db.Integer, db.ForeignKey("account.id"))
+    account_id = db.Column(db.Integer, db.ForeignKey("account.id",
+                                                     ondelete='CASCADE'))
     date_created = db.Column(db.DateTime(timezone=True),
                              server_default=func.now())
 

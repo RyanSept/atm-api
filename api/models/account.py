@@ -29,7 +29,8 @@ class Account(db.Model):
                               server_default=func.now(),
                               onupdate=func.now())
 
-    transactions = db.relationship('Transaction', backref='transaction',
+    transactions = db.relationship('Transaction', backref='account',
+                                   passive_deletes=True,
                                    lazy=True)
 
     def __init__(self, account_number, pin, first_name, last_name,
