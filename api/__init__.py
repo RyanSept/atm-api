@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from logging.handlers import RotatingFileHandler
+from flask_cors import CORS
 import logging
 
 
@@ -24,6 +25,7 @@ def create_app(config):
     register_api_resources(rest_api)
     rest_api.init_app(app)
     setup_logging(app)
+    CORS(app)
 
     return app
 
