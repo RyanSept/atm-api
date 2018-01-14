@@ -23,8 +23,7 @@ class StagingConfig(Config):
 
 
 class ProductionConfig(Config):
-    DEBUG = False
-    LOG_LEVEL = logging.INFO
+    pass
 
 
 def load_config():
