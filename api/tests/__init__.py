@@ -4,16 +4,21 @@ from api.models.account import Account
 import unittest
 import json
 
+app = create_app(load_config())
+
 
 class BaseTestCase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app(load_config())
+        self.app = app
         self.client = self.app.test_client()
 
     def tearDown(self):
         rest_api.resources = []
 
     def create_test_account(self):
+        """
+        Create account in db for testing
+        """
         if not hasattr(self, "headers"):
             self.headers = {"Content-Type": "application/json"}
         self.account = {
@@ -32,6 +37,9 @@ class BaseTestCase(unittest.TestCase):
                          headers=self.headers)
 
     def add_auth_to_headers(self):
+        """
+        Login and add Authorization headers
+        """
         if not hasattr(self, "headers"):
             self.headers = {"Content-Type": "application/json"}
 

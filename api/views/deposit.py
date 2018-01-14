@@ -33,7 +33,7 @@ class Deposit(Resource):
                 return {"message":
                         {"deposit_amount": "The allowed maximum number of"
                          " deposits per day for your account is {}".format(
-                             account.max_deposit_frequency)}}
+                             account.max_deposit_frequency)}}, 400
             sum_todays_deposits = sum(
                 deposit.amount for deposit in todays_deposits)
             # this deposit would exceed the daily limit
@@ -41,11 +41,12 @@ class Deposit(Resource):
                     account.max_deposit_per_day:
                 print("Deposit amount limit for day exceeded.")
                 return {"message":
-                        {"deposit_amount": "The allowed maximum deposit amount"
-                         " per day for your account is {}."
+                        {"deposit_amount": "Unable to make deposit as "
+                         "it would exceed your"
+                         " daily deposit limit of {}."
                          " You have deposited {} today".format(
                              account.max_deposit_per_day,
-                             sum_todays_deposits)}}
+                             sum_todays_deposits)}}, 400
 
         print("Depositing %s to account." % request_json.deposit_amount)
         # increase account balance and record transaction
