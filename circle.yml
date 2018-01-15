@@ -1,0 +1,9 @@
+machine:
+    python:
+        version: 3.6.0
+
+test:
+    override:
+        - nosetests
+    post:
+        - nosetests --with-coverage --cover-package=api

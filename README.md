@@ -40,10 +40,9 @@ Run `$ python manage.py init_app` to create tables on the database.
 
 
 ### Generating a secure encryption key for the application
-In progress.
+To generate an encryption key for the `SECRET_KEY` app cofig run `$ python manage.py generate_secret_key`
 
 # Documentation
-(Provisional)
 
 ### Account login
 
@@ -144,8 +143,74 @@ Content-Type: application/json
     "balance": 100000,
     "account_number": "1234567890"
 }
+```
+---
+
+### Account deposit
+
+Making a deposit.
 
 ```
+*Sample request*
+POST /accounts/balance
+Accept: application/json
+{
+    "deposit_amount": 10000
+}
+```
+
+```
+*Sample response*
+HTTP/1.1 201 OK
+Vary: Accept
+Content-Type: application/json
+{
+    "message": "Deposited 10000 successfully.",
+    "new_balance": 110000
+}
+
+```
+
+Request Arguments
+
+    Body:
+
+        deposit_amount <required><int>: Amount to deposit into account
+
+---
+
+### Account withdrawal
+
+Making a withdrawal from an account.
+
+```
+*Sample request*
+POST /accounts/withdraw
+Accept: application/json
+{
+    "withdrawal_amount": 10000
+}
+```
+
+```
+*Sample response*
+HTTP/1.1 201 OK
+Vary: Accept
+Content-Type: application/json
+{
+    "message": "Withdrew 10000 successfully.",
+    "new_balance": 90000
+}
+
+```
+
+Request Arguments
+
+    Body:
+
+        withdrawal_amount <required><int>: Amount to withdraw from account
+
+---
 
 ## Deploying and Management
 Create an app on heroku `$ heroku apps:create <app_name>` and set secret config variables through the heroku dashboard.
@@ -154,4 +219,14 @@ Create an app on heroku `$ heroku apps:create <app_name>` and set secret config 
 
 
 ## Unit Tests
-In progress.
+To run the application's unit tests, simply run `$ nosetests`
+
+To run a specific test run eg. the register endpoint test run:
+
+`$ nosetests api.v1.tests.test_register:RegisterTestSuite.test_creates_account`
+
+To run a specific test suite eg. the deposit test suite, run:
+
+`$ nosetests api.v1.tests.test_deposit`
+
+To check test coverage `$ nosetests --with-coverage --cover-package=api`
