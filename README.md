@@ -1,4 +1,7 @@
 # ATM-API
+[![CircleCI](https://circleci.com/gh/RyanSept/atm-api/tree/develop.svg?style=svg)](https://circleci.com/gh/RyanSept/atm-api/tree/develop)
+[![codecov](https://codecov.io/gh/RyanSept/atm-api/branch/develop/graph/badge.svg)](https://codecov.io/gh/RyanSept/atm-api)
+
 This is a Bank ATM api. It is available at https://atm2.herokuapp.com/
 
 ## Built with
