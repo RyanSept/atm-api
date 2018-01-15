@@ -155,7 +155,7 @@ Making a deposit.
 
 ```
 *Sample request*
-POST /accounts/balance
+POST /accounts/deposit
 Accept: application/json
 {
     "deposit_amount": 10000
